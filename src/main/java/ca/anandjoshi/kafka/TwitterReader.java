@@ -1,5 +1,7 @@
 package ca.anandjoshi.kafka;
 
+import ca.anandjoshi.utils.TwitterClient;
+import ca.anandjoshi.utils.TwitterKafkaProducer;
 import com.twitter.hbc.core.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
