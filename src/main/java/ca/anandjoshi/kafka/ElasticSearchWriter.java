@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class ElasticSearchWriter {
 
     final private static JsonParser jsonParser = new JsonParser();
-    final Logger logger = LoggerFactory.getLogger(ElasticSearchWriter.class);
+    final private Logger logger = LoggerFactory.getLogger(ElasticSearchWriter.class);
 
     public static void main(String[] args) {
         new ElasticSearchWriter().run();

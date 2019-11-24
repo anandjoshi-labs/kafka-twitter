@@ -16,7 +16,7 @@ public class TwitterReader {
 
     public static void main(String[] args) {
         final Logger logger = LoggerFactory.getLogger(TwitterReader.class);
-        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(1000);
+        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(1000);
 
         System.out.println("Reading twitter stream");
 

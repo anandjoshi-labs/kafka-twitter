@@ -36,7 +36,6 @@ public class TwitterClient {
                 .endpoint(hosebirdEndpoint)
                 .processor(new StringDelimitedProcessor(msgQueue));
 
-        Client hosebirdClient = builder.build();
-        return hosebirdClient;
+        return builder.build();
     }
 }

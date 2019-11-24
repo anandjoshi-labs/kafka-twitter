@@ -32,8 +32,7 @@ public class TwitterKafkaConsumer {
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "100"); // disable auto commit of offsets
 
         // create consumer
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
-        return consumer;
+        return new KafkaConsumer<>(properties);
     }
 
     public ConsumerRecords<String, String> readFromKafka(String topic) {
@@ -43,7 +42,7 @@ public class TwitterKafkaConsumer {
         consumer.subscribe(Arrays.asList(topic));
         while(true){
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
-            Integer recordCount = records.count();
+            int recordCount = records.count();
             if (recordCount > 0) {
                 logger.info("Received " + recordCount + " records");
                 return records;

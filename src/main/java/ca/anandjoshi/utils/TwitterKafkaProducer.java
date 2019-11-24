@@ -1,6 +1,8 @@
 package ca.anandjoshi.utils;
 
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,7 @@ import java.util.Properties;
 
 public class TwitterKafkaProducer {
 
-    final Logger logger = LoggerFactory.getLogger(TwitterKafkaProducer.class);
+    private final Logger logger = LoggerFactory.getLogger(TwitterKafkaProducer.class);
     private KafkaProducer producer = null;
 
     private static KafkaProducer createTwitterKafkaProducer() {
@@ -33,29 +35,25 @@ public class TwitterKafkaProducer {
         properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024)); // 32 KB batch size
 
         // create the producer
-        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
-
-        return producer;
+        return new KafkaProducer<>(properties);
     }
 
     public void writeToKafka(final String topic, final String key, final String payload) {
         if (this.producer == null) {
             this.producer = createTwitterKafkaProducer();
         }
-        ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, key, payload);
-        producer.send(record, new Callback() {
-            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                // executes every time a record is successfully sent or an exception is thrown
-                if (e == null) {
-                    // the record was successfully sent
-                    logger.info("Received new metadata. \n" +
-                            "Topic:" + recordMetadata.topic() + "\n" +
-                            "Partition: " + recordMetadata.partition() + "\n" +
-                            "Offset: " + recordMetadata.offset() + "\n" +
-                            "Timestamp: " + recordMetadata.timestamp());
-                } else {
-                    logger.error("Error while producing", e);
-                }
+        ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, payload);
+        producer.send(record, (recordMetadata, e) -> {
+            // executes every time a record is successfully sent or an exception is thrown
+            if (e == null) {
+                // the record was successfully sent
+                logger.info("Received new metadata. \n" +
+                        "Topic:" + recordMetadata.topic() + "\n" +
+                        "Partition: " + recordMetadata.partition() + "\n" +
+                        "Offset: " + recordMetadata.offset() + "\n" +
+                        "Timestamp: " + recordMetadata.timestamp());
+            } else {
+                logger.error("Error while producing", e);
             }
         });
         producer.flush();
